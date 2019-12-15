@@ -39,7 +39,7 @@ public class ADR
 		this.carNum = carNum;
 		this.generationTimes = generation;
 		this.W = -0.8;
-		this.accpetThreshold = 0.15;
+		this.accpetThreshold = 0.193;
 		this.carWeight = 1;
 		this.distanceWeight = 1;
 		this.updated=new double[map.getverNum()][map.getverNum()];
@@ -91,7 +91,7 @@ public class ADR
 				{
 					for (int j = 0; j < goodTimes.size(); j++)
 					{
-						if (goodTimes.elementAt(j) - newTime >= accpetThreshold)// 是否为10待定
+						if (goodTimes.elementAt(j) - newTime >= bestTime*accpetThreshold)// 是否为10待定
 						{
 							goodTimes.remove(j);
 							bestRoutes.remove(j);
@@ -100,7 +100,7 @@ public class ADR
 					goodTimes.add(newTime);
 					bestRoutes.add(ants[ant].getSearched());
 					bestTime = newTime;
-				} else if (newTime - bestTime <= accpetThreshold)
+				} else if (newTime - bestTime <= bestTime*accpetThreshold)
 				{
 					if (!bestRoutes.contains(ants[ant].getSearched()))
 					{
