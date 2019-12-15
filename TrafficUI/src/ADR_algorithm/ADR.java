@@ -21,6 +21,7 @@ public class ADR
 	private ArrayList<Vector<Integer>> bestRoutes;// best Routes
 	private Vector<Double> goodTimes;// the cost time of best routes
 	private double bestTime;
+	private double[][] updated;//record the roads on the best routes
 
 	private double W;// the weighting factor of constant network cost
 	private double evaporation;// evaporation rate
@@ -41,6 +42,7 @@ public class ADR
 		this.accpetThreshold = 0.15;
 		this.carWeight = 1;
 		this.distanceWeight = 1;
+		this.updated=new double[map.getverNum()][map.getverNum()];
 		steepness = 0.8;
 		this.evaporation = 0.6;
 		double start = (1.0 / (map.getverNum() - 1) * antNum);
@@ -116,6 +118,7 @@ public class ADR
 				ants[v].initialAnt(originCity, terminalCity);
 			}
 		}
+		pruneTheNetwork();
 		// Flow Optimization
 		Object[] array = bestRoutes.toArray();
 		Vector<Integer>[] routes = new Vector[array.length];
@@ -270,7 +273,20 @@ public class ADR
 				if (p == null)
 					continue;
 				p.pheromone += evaporation * depositMatrix[i][j];
-				if (depositMatrix[i][j] == 0)// prune the net,make it invisible
+				updated[i][j]+=depositMatrix[i][j];
+			}
+	}
+	void pruneTheNetwork()
+	{
+		for (int i = 0; i < map.getverNum(); i++)
+			for (int j = 0; j < map.getverNum(); j++)
+			{
+				ArcNode p = map.getVertices()[i].firstEdge;
+				while (p != null && p.adjvex != j)
+					p = p.next;
+				if (p == null)
+					continue;
+				if (updated[i][j] == 0)// prune the net,make it invisible
 					p.pheromone = 0;
 			}
 	}
